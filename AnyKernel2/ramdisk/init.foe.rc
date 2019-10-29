@@ -1,0 +1,22 @@
+# Thanks fantaghiro foe <foe@iframework.org> ~~!
+
+on property:sys.boot_completed=1
+    # Set ReadAhead
+	write /sys/block/mmcblk0/queue/read_ahead_kb 128
+	write /sys/block/mmcblk0/queue/scheduler maple
+	write /sys/module/lowmemorykiller/parameters/lmk_fast_run 1
+	write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 1
+
+	#Disable Core Control and Control VDD and MSM Thermal Throttling allowing for longer sustained performance
+	write /sys/module/msm_thermal/core_control/enabled 1
+	
+	#entropy
+	write /proc/sys/kernel/random/read_wakeup_threshold 64
+	write /proc/sys/kernel/random/write_wakeup_threshold 128
+	
+	#config bricked hotplug
+	write /sys/kernel/msm_mpdecision/conf/max_cpus 8
+	write /sys/kernel/msm_mpdecision/conf/min_cpus 8
+
+    exec u:r:su:s0 root root -- /init.special_power.sh
+    exec u:r:supersu:s0 root root -- /init.special_power.sh
